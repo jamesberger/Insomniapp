@@ -1339,6 +1339,8 @@ class InsomniappSuite:
                         trend = "improving" if last_three > first_three else "declining"
                         change = abs(last_three - first_three)
                     print(f"     Trend: {trend} ({change:.3f} change from first 3 to last 3)")
+        
+        input("\nPress Enter to return to main menu...")
     
     def sleep_logging_menu(self):
         """Menu for logging sleep data"""
@@ -1430,7 +1432,7 @@ class InsomniappSuite:
             return
         
         print("Choose a week to analyze:")
-        print("1. Current week (Monday-Friday)")
+        print("1. Current week (Monday-Sunday)")
         print("2. Enter a specific week date")
         print("3. Back to main menu")
         
@@ -1460,9 +1462,9 @@ class InsomniappSuite:
             print("Invalid choice.")
             return
         
-        # Generate the 5 weekdays (Monday-Friday)
-        weekdays = [monday + timedelta(days=i) for i in range(5)]
-        weekday_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        # Generate the 7 days of the week (Monday-Sunday)
+        weekdays = [monday + timedelta(days=i) for i in range(7)]
+        weekday_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         
         print(f"\nWeek of {monday.strftime('%B %d, %Y')} - {weekdays[-1].strftime('%B %d, %Y')}")
         print("=" * 70)
@@ -1495,8 +1497,8 @@ class InsomniappSuite:
             if test_name not in self.results or not self.results[test_name]:
                 print(f"   No historical data available for {test_name}")
                 # Still add to graphing data with all None values
-                daily_scores = [None] * 5
-                daily_labels = [f"{weekday_names[i][:3]} (-)" for i in range(5)]
+                daily_scores = [None] * 7
+                daily_labels = [f"{weekday_names[i][:3]} (-)" for i in range(7)]
             else:
                 for i, day in enumerate(weekdays):
                     day_results = [
@@ -1522,6 +1524,17 @@ class InsomniappSuite:
                     else:
                         daily_scores.append(None)
                         daily_labels.append(f"{weekday_names[i][:3]} (-)")
+            
+            # Display the daily data in text format
+            if daily_scores and any(s is not None for s in daily_scores):
+                print("   Daily scores:")
+                for i, (score, label) in enumerate(zip(daily_scores, daily_labels)):
+                    if score is not None:
+                        print(f"     {label}: {score:.3f}")
+                    else:
+                        print(f"     {label}: No data")
+            else:
+                print("   No data available for this week")
             
             # Always collect data for matplotlib graphing (even if no data)
             all_test_data.append({
@@ -1925,7 +1938,7 @@ class InsomniappSuite:
                     
                     # Customize the subplot
                     ax.set_title(test_title_map.get(test_name, test_name), fontsize=9, fontweight='bold', pad=12)
-                    ax.set_xticks(range(5))
+                    ax.set_xticks(range(7))
                     
                     # Create x-axis labels with sleep data
                     x_labels = []
@@ -2023,7 +2036,7 @@ class InsomniappSuite:
                     ax.text(0.5, 0.5, 'No data\nfor this week', transform=ax.transAxes, 
                            fontsize=9, ha='center', va='center', style='italic', color='gray')
                     ax.set_title(test_title_map.get(test_name, test_name), fontsize=9, fontweight='bold', pad=12)
-                    ax.set_xticks(range(5))
+                    ax.set_xticks(range(7))
                     
                     # Create x-axis labels with sleep data even for no-data case
                     x_labels = []
@@ -2117,6 +2130,8 @@ class InsomniappSuite:
                     plt.show(block=True)  # Block until window is closed
                     print("   Interactive window closed.")
                     interactive_success = True
+                    input("\nPress Enter to return to main menu...")
+                    return  # Exit the function after interactive display
             except Exception as e:
                 print(f"   Interactive window failed to open: {e}")
                 print("   This is common in some terminal environments (Tabby, Admin PowerShell, etc.)")
@@ -2133,9 +2148,12 @@ class InsomniappSuite:
                     else:  # Linux
                         subprocess.run(['xdg-open', backup_file], check=True)
                     print(f"   Opened {backup_file} in default image viewer.")
-                    input("   Press Enter to continue...")
                 except subprocess.CalledProcessError:
                     print(f"   Could not open {backup_file}. Please open it manually.")
+                    print(f"   The graph file is saved as: {backup_file}")
+            
+            # Always wait for user input before returning to menu
+            input("\nPress Enter to return to main menu...")
             
         except ImportError:
             print("[ERROR] matplotlib is not installed. Please install it with:")
@@ -2182,6 +2200,8 @@ class InsomniappSuite:
                     print(f"  Average: {avg:.3f} | {trend} (Δ {change:.3f})")
             else:
                 print("  No data available for this week")
+        
+        input("\nPress Enter to return to main menu...")
     
     def main_menu(self):
         """Main menu interface"""
@@ -2245,6 +2265,7 @@ class InsomniappSuite:
                     break
                 else:
                     print("Invalid choice. Please select 1-12.")
+                    time.sleep(0.5)  # Brief pause to show error message
                     
             except KeyboardInterrupt:
                 print("\n\nTest interrupted. Returning to main menu...")
@@ -2276,6 +2297,7 @@ class InsomniappSuite:
                 print("Invalid choice.")
         except ValueError:
             print("Invalid input.")
+            time.sleep(0.5)  # Brief pause to show error message
 
 def main():
     """Main function to run Insomniapp"""
