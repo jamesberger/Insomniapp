@@ -1,0 +1,5 @@
+# Core cognitive test suite requirements
+matplotlib>=3.5.0  # For professional-quality graphs in weekly trend analysis
+
+# Python 3.6+ recommended for optimal compatibility
+# Note: matplotlib is optional - text-based fallback is available if not installed

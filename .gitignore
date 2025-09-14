@@ -1,0 +1,42 @@
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# User data files - DO NOT COMMIT PERSONAL TEST RESULTS
+insomniapp_results.json
+sleep_log.json
+terminal_latency.json
+
+# Generated graph files
+insomniapp_trends.png
+cognitive_trends_test.png
+
+# GUI test output files
+gui_test_cursor.txt
